@@ -1,5 +1,9 @@
 name: Build
-on: push
+on: 
+  workflow_dispatch:  # Allows manual triggering
+  push:               # Keeps existing push trigger (if needed)
+  pull_request:       # Optional: Runs on PRs
+
 jobs:
   PyInstaller:
     runs-on: ${{ matrix.os }}
@@ -15,7 +19,7 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: 3.6
-    - name: Install libusb (windows)
+    - name: Install libusb (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
@@ -23,7 +27,7 @@ jobs:
         Expand-Archive libusb-win32-bin-1.2.6.0.zip .
         Move-Item libusb-win32-bin-1.2.6.0\bin\amd64\libusb0.dll .
         echo $env:GITHUB_WORKSPACE | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-    - name: Install libusb (macos)
+    - name: Install libusb (macOS)
       if: runner.os == 'macOS'
       run: |
         brew install libusb
